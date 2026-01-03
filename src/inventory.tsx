@@ -3,11 +3,13 @@ import Sidebar from "./assets/components/sidebar";
 import { supabase } from "../src/supabaseClient";
 import "../src/assets/css/inventory.css";
 
+/* ================= INTERFACES ================= */
+
 interface InventoryProduct {
   id: number;
   product_name: string;
   category: string;
-  price: string;  // keep as string for form
+  price: string;      // keep as string for form inputs
   stock: string;
   min_stock: string;
   unit: string;
@@ -23,6 +25,8 @@ interface Product {
   stock: number;
   status: string;
 }
+
+/* ================= COMPONENT ================= */
 
 const Inventory = () => {
   const [items, setItems] = useState<InventoryProduct[]>([]);
@@ -50,6 +54,7 @@ const Inventory = () => {
     unit: "",
   });
 
+  /* ================= FETCH INVENTORY ================= */
   const fetchSupplies = async () => {
     const { data } = await supabase
       .from("inventory_products")
@@ -58,6 +63,7 @@ const Inventory = () => {
     setItems(data || []);
   };
 
+  /* ================= FETCH PRODUCTS ================= */
   const fetchProducts = async () => {
     const { data } = await supabase
       .from("products")
@@ -76,11 +82,17 @@ const Inventory = () => {
     fetchProducts();
   }, []);
 
+  /* ================= SAVE INVENTORY ================= */
   const handleSave = async () => {
     const priceNum = Number(form.price);
     const stockNum = Number(form.stock);
     const minStockNum = Number(form.min_stock);
     const status = stockNum <= minStockNum ? "LOW STOCK" : "IN STOCK";
+
+    if (!form.product_name || !form.category) {
+      alert("Please fill all required fields!");
+      return;
+    }
 
     if (editingItem) {
       await supabase
@@ -111,6 +123,7 @@ const Inventory = () => {
     fetchSupplies();
   };
 
+  /* ================= PRODUCT EDIT ================= */
   const startEditProduct = (p: Product) => {
     setEditingProductId(p.product_id);
     setProductForm({
@@ -139,6 +152,7 @@ const Inventory = () => {
     fetchProducts();
   };
 
+  /* ================= FILTERS ================= */
   const filteredItems = items.filter(i =>
     i.product_name.toLowerCase().includes(search.toLowerCase())
   );
@@ -149,7 +163,6 @@ const Inventory = () => {
 
   const uniqueCategories = Array.from(new Set(products.map(p => p.category_name || "Unknown")));
 
-
   /* ================= UI ================= */
   return (
     <div className="inventory-container">
@@ -158,110 +171,108 @@ const Inventory = () => {
       <div className="inventory-main">
         <h2>Supplies Inventory</h2>
 
-          {/* ================= INVENTORY TABLE ================= */}
-          <div className="inventory-header">
-            <input
-              className="inventory-search"
-              placeholder="Search supply..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-            <button
-              className="btn-add-inventory"
-              onClick={() => {
-                setEditingItem(null); // null means adding new item
-                setForm({
-                  product_name: "",
-                  category: "",
-                  price: 0,
-                  stock: 0,
-                  min_stock: 0,
-                  unit: "",
-                });
-                setShowModal(true);
-              }}
-            >
-              + Add Inventory
-            </button>
-          </div>
+        <div className="inventory-header">
+          <input
+            className="inventory-search"
+            placeholder="Search supply..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <button
+            className="btn-add-inventory"
+            onClick={() => {
+              setEditingItem(null);
+              setForm({
+                product_name: "",
+                category: "",
+                price: "",
+                stock: "",
+                min_stock: "",
+                unit: "",
+              });
+              setShowModal(true);
+            }}
+          >
+            + Add Inventory
+          </button>
+        </div>
 
-          <table className="inventory-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Stock</th>
-                <th>Unit</th>
-                <th>Min</th>
-                <th>Status</th>
+        <table className="inventory-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Unit</th>
+              <th>Min</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredItems.map(item => (
+              <tr key={item.id}>
+                <td>{item.product_name}</td>
+                <td>{item.category}</td>
+                <td>{item.stock}</td>
+                <td>{item.unit}</td>
+                <td>{item.min_stock}</td>
+                <td>{item.status}</td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredItems.map(item => (
-                <tr key={item.id}>
-                  <td>{item.product_name}</td>
-                  <td>{item.category}</td>
-                  <td>{item.stock}</td>
-                  <td>{item.unit}</td>
-                  <td>{item.min_stock}</td>
-                  <td>{item.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
 
-          {/* ================= ADD / EDIT MODAL ================= */}
-          {showModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h3>{editingItem ? "Edit Inventory" : "Add Inventory"}</h3>
-                <div className="modal-body">
-                  <input
-                    placeholder="Product Name"
-                    value={form.product_name}
-                    onChange={e => setForm({ ...form, product_name: e.target.value })}
-                  />
-                  <input
-                    placeholder="Category"
-                    value={form.category}
-                    onChange={e => setForm({ ...form, category: e.target.value })}
-                  />
-                  <input
-                      type="number"
-                      placeholder="Price"
-                      value={form.price}
-                      onChange={e => setForm({ ...form, price: e.target.value })}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Stock"
-                      value={form.stock}
-                      onChange={e => setForm({ ...form, stock: e.target.value })}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Min Stock"
-                      value={form.min_stock}
-                      onChange={e => setForm({ ...form, min_stock: e.target.value })}
-                    />
-                  <input
-                    placeholder="Unit"
-                    value={form.unit}
-                    onChange={e => setForm({ ...form, unit: e.target.value })}
-                  />
-                </div>
-                <div className="modal-footer">
-                  <button onClick={handleSave} className="btn-save">
-                    {editingItem ? "Save Changes" : "Add Inventory"}
-                  </button>
-                  <button onClick={() => setShowModal(false)} className="btn-cancel">
-                    Cancel
-                  </button>
-                </div>
+        {/* ================= MODAL ================= */}
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>{editingItem ? "Edit Inventory" : "Add Inventory"}</h3>
+              <div className="modal-body">
+                <input
+                  placeholder="Product Name"
+                  value={form.product_name}
+                  onChange={e => setForm({ ...form, product_name: e.target.value })}
+                />
+                <input
+                  placeholder="Category"
+                  value={form.category}
+                  onChange={e => setForm({ ...form, category: e.target.value })}
+                />
+                <input
+                  type="number"
+                  placeholder="Price"
+                  value={form.price}
+                  onChange={e => setForm({ ...form, price: e.target.value })}
+                />
+                <input
+                  type="number"
+                  placeholder="Stock"
+                  value={form.stock}
+                  onChange={e => setForm({ ...form, stock: e.target.value })}
+                />
+                <input
+                  type="number"
+                  placeholder="Min Stock"
+                  value={form.min_stock}
+                  onChange={e => setForm({ ...form, min_stock: e.target.value })}
+                />
+                <input
+                  placeholder="Unit"
+                  value={form.unit}
+                  onChange={e => setForm({ ...form, unit: e.target.value })}
+                />
+              </div>
+              <div className="modal-footer">
+                <button onClick={handleSave} className="btn-save">
+                  {editingItem ? "Save Changes" : "Add Inventory"}
+                </button>
+                <button onClick={() => setShowModal(false)} className="btn-cancel">
+                  Cancel
+                </button>
               </div>
             </div>
-          )}
-
+          </div>
+        )}
 
         {/* ================= PRODUCTS TABLE ================= */}
         <h2 style={{ marginTop: "40px" }}>Products</h2>
@@ -312,10 +323,7 @@ const Inventory = () => {
                         type="number"
                         value={productForm.price}
                         onChange={e =>
-                          setProductForm({
-                            ...productForm,
-                            price: Number(e.target.value),
-                          })
+                          setProductForm({ ...productForm, price: Number(e.target.value) })
                         }
                       />
                     </td>
@@ -325,26 +333,16 @@ const Inventory = () => {
                         type="number"
                         value={productForm.stock}
                         onChange={e =>
-                          setProductForm({
-                            ...productForm,
-                            stock: Number(e.target.value),
-                          })
+                          setProductForm({ ...productForm, stock: Number(e.target.value) })
                         }
                       />
                     </td>
                     <td>
                       <select
-                        className={`edit-select ${
-                          productForm.status === "available"
-                            ? "available"
-                            : "unavailable"
-                        }`}
+                        className={`edit-select ${productForm.status === "available" ? "available" : "unavailable"}`}
                         value={productForm.status}
                         onChange={e =>
-                          setProductForm({
-                            ...productForm,
-                            status: e.target.value.toLowerCase(),
-                          })
+                          setProductForm({ ...productForm, status: e.target.value.toLowerCase() })
                         }
                       >
                         <option value="available">Available</option>
@@ -352,10 +350,7 @@ const Inventory = () => {
                       </select>
                     </td>
                     <td>
-                      <button
-                        className="btn-save-product"
-                        onClick={() => saveProduct(p.product_id)}
-                      >
+                      <button className="btn-save-product" onClick={() => saveProduct(p.product_id)}>
                         Save
                       </button>
                     </td>
@@ -363,29 +358,14 @@ const Inventory = () => {
                 ) : (
                   <>
                     <td>₱{p.price}</td>
-                    <td
-                      className={`stock-cell ${
-                        p.stock <= 0 ? "low" : "ok"
-                      }`}
-                    >
-                      {p.stock}
-                    </td>
+                    <td className={`stock-cell ${p.stock <= 0 ? "low" : "ok"}`}>{p.stock}</td>
                     <td>
-                      <span
-                        className={`status-badge ${
-                          p.status.toLowerCase() === "available"
-                            ? "available"
-                            : "unavailable"
-                        }`}
-                      >
+                      <span className={`status-badge ${p.status.toLowerCase() === "available" ? "available" : "unavailable"}`}>
                         {p.status}
                       </span>
                     </td>
                     <td>
-                      <button
-                        className="btn-edit-product"
-                        onClick={() => startEditProduct(p)}
-                      >
+                      <button className="btn-edit-product" onClick={() => startEditProduct(p)}>
                         Edit
                       </button>
                     </td>
