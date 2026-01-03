@@ -3,13 +3,11 @@ import Sidebar from "./assets/components/sidebar";
 import { supabase } from "../src/supabaseClient";
 import "../src/assets/css/inventory.css";
 
-/* ================= INTERFACES ================= */
-
 interface InventoryProduct {
   id: number;
   product_name: string;
   category: string;
-  price: string;
+  price: string;  // keep as string for form
   stock: string;
   min_stock: string;
   unit: string;
@@ -26,20 +24,16 @@ interface Product {
   status: string;
 }
 
-/* ================= COMPONENT ================= */
-
 const Inventory = () => {
   const [items, setItems] = useState<InventoryProduct[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [productSearch, setProductSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState(""); // Category filter
+  const [categoryFilter, setCategoryFilter] = useState("");
 
-  // Inventory modal
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryProduct | null>(null);
 
-  // Products edit state
   const [editingProductId, setEditingProductId] = useState<number | null>(null);
   const [productForm, setProductForm] = useState({
     price: 0,
@@ -47,7 +41,6 @@ const Inventory = () => {
     status: "available",
   });
 
-  // Inventory form
   const [form, setForm] = useState({
     product_name: "",
     category: "",
@@ -57,7 +50,6 @@ const Inventory = () => {
     unit: "",
   });
 
-  /* ================= FETCH INVENTORY ================= */
   const fetchSupplies = async () => {
     const { data } = await supabase
       .from("inventory_products")
@@ -66,25 +58,15 @@ const Inventory = () => {
     setItems(data || []);
   };
 
-  /* ================= FETCH PRODUCTS + CATEGORY ================= */
   const fetchProducts = async () => {
     const { data } = await supabase
       .from("products")
-      .select(`
-        product_id,
-        product_name,
-        category_id,
-        price,
-        stock,
-        status,
-        categories ( category_name )
-      `);
+      .select(`product_id, product_name, category_id, price, stock, status, categories(category_name)`);
 
-    const formatted =
-      data?.map((p: any) => ({
-        ...p,
-        category_name: p.categories?.category_name || "Unknown",
-      })) || [];
+    const formatted = data?.map((p: any) => ({
+      ...p,
+      category_name: p.categories?.category_name || "Unknown",
+    })) || [];
 
     setProducts(formatted);
   };
@@ -94,17 +76,27 @@ const Inventory = () => {
     fetchProducts();
   }, []);
 
-  /* ================= INVENTORY SAVE ================= */
- const handleSave = async () => {
-  const priceNum = Number(form.price);
-  const stockNum = Number(form.stock);
-  const minStockNum = Number(form.min_stock);
-  const status = stockNum <= minStockNum ? "LOW STOCK" : "IN STOCK";
+  const handleSave = async () => {
+    const priceNum = Number(form.price);
+    const stockNum = Number(form.stock);
+    const minStockNum = Number(form.min_stock);
+    const status = stockNum <= minStockNum ? "LOW STOCK" : "IN STOCK";
 
-  if (editingItem) {
-    await supabase
-      .from("inventory_products")
-      .update({
+    if (editingItem) {
+      await supabase
+        .from("inventory_products")
+        .update({
+          product_name: form.product_name,
+          category: form.category,
+          price: priceNum,
+          stock: stockNum,
+          min_stock: minStockNum,
+          unit: form.unit,
+          status,
+        })
+        .eq("id", editingItem.id);
+    } else {
+      await supabase.from("inventory_products").insert({
         product_name: form.product_name,
         category: form.category,
         price: priceNum,
@@ -112,26 +104,13 @@ const Inventory = () => {
         min_stock: minStockNum,
         unit: form.unit,
         status,
-      })
-      .eq("id", editingItem.id);
-  } else {
-    await supabase.from("inventory_products").insert({
-      product_name: form.product_name,
-      category: form.category,
-      price: priceNum,
-      stock: stockNum,
-      min_stock: minStockNum,
-      unit: form.unit,
-      status,
-    });
-  }
+      });
+    }
 
-  setShowModal(false);
-  fetchSupplies();
-};
+    setShowModal(false);
+    fetchSupplies();
+  };
 
-
-  /* ================= PRODUCT EDIT ================= */
   const startEditProduct = (p: Product) => {
     setEditingProductId(p.product_id);
     setProductForm({
@@ -160,20 +139,16 @@ const Inventory = () => {
     fetchProducts();
   };
 
-  /* ================= FILTERS ================= */
   const filteredItems = items.filter(i =>
     i.product_name.toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredProducts = products
-    .filter(p =>
-      p.product_name.toLowerCase().includes(productSearch.toLowerCase())
-    )
+    .filter(p => p.product_name.toLowerCase().includes(productSearch.toLowerCase()))
     .filter(p => categoryFilter === "" || p.category_name === categoryFilter);
 
-  const uniqueCategories = Array.from(
-    new Set(products.map(p => p.category_name || "Unknown"))
-  );
+  const uniqueCategories = Array.from(new Set(products.map(p => p.category_name || "Unknown")));
+
 
   /* ================= UI ================= */
   return (
