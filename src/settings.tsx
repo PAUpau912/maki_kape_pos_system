@@ -13,7 +13,7 @@ const Settings = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [profilePic, setProfilePic] = useState(""); // filename stored in DB
+  const [profilePic, setProfilePic] = useState("");
 
   // Preview and new file state
   const [newProfilePicFile, setNewProfilePicFile] = useState<File | null>(null);
@@ -26,39 +26,34 @@ const Settings = () => {
   // Security
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  // 🔹 Fetch logged-in user
+
   useEffect(() => {
-  const fetchUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setUser(user);
-    setEmail(user.email);
+      setUser(user);
+      setEmail(user.email ?? "");
 
-    const { data } = await supabase
-      .from("users")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+      const { data } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
 
       if (data) {
-    setFullName(data.full_name ?? "");
-    setRole(data.role ?? "");
-    setProfilePic(data.profile_pic ?? "");
-    if (data.profile_pic) {
-      setPreviewUrl(await getSignedUrl(data.profile_pic));
-    }
-  }
+        setFullName(data.full_name ?? "");
+        setRole(data.role ?? "");
+        setProfilePic(data.profile_pic ?? "");
+        if (data.profile_pic) {
+          setPreviewUrl(await getSignedUrl(data.profile_pic));
+        }
+      }
+    };
 
+    fetchUser();
+  }, []);
 
-    // Removed login history
-  };
-
-  fetchUser();
-}, []);
-
-
-  // 🔹 Generate signed URL for private avatar
   const getSignedUrl = async (filename: string) => {
     const { data, error } = await supabase.storage
       .from("avatars")
@@ -71,7 +66,7 @@ const Settings = () => {
 
     return data.signedUrl;
   };
-  // 🔹 Select new image (preview only)
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -83,7 +78,6 @@ const Settings = () => {
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  // 🔹 Update profile (name + optional new image)
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -124,7 +118,6 @@ const Settings = () => {
     }
   };
 
-  // 🔹 Change password
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -143,11 +136,8 @@ const Settings = () => {
     }
   };
 
-  // 🔹 Logout securely
   const handleLogout = async () => {
     await supabase.auth.signOut();
-
-    // Redirect and prevent back button
     navigate("/", { replace: true });
     window.history.pushState(null, "", "/");
     window.onpopstate = () => window.history.go(1);
@@ -163,7 +153,6 @@ const Settings = () => {
         </div>
 
         <div className="settings-grid">
-          {/* ================= ACCOUNT SETTINGS ================= */}
           <section className="settings-section">
             <h3>Account Settings</h3>
             <form onSubmit={handleUpdateProfile} className="settings-form">
@@ -193,8 +182,7 @@ const Settings = () => {
             </button>
           </section>
 
-          {/* ================= SECURITY SETTINGS ================= */}
-         <section className="settings-section security">
+          <section className="settings-section security">
             <h3>Security Settings</h3>
             <form onSubmit={handleChangePassword} className="settings-form">
               <label>New Password</label>
@@ -204,23 +192,12 @@ const Settings = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
-                  style={{
-                    width: '100%',
-                    paddingRight: '2.5rem', // space for icon
-                    boxSizing: 'border-box',
-                  }}
+                  style={{ width: '100%', paddingRight: '2.5rem', boxSizing: 'border-box' }}
                 />
                 <span
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: '0.5rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    cursor: 'pointer',
-                    color: '#555',
-                  }}
+                  style={{ position: 'absolute', right: '0.5rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#555' }}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
