@@ -3,15 +3,17 @@ import Sidebar from "./assets/components/sidebar";
 import { supabase } from "../src/supabaseClient";
 import "../src/assets/css/settings.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
 
   // Account info
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
-  const [profilePic, setProfilePic] = useState(""); // filename stored in DB
+  setFullName(data.full_name ?? "");
+  setRole(data.role ?? "");
+  setProfilePic(data.profile_pic ?? "");
+  setEmail(user.email ?? "");
 
   // Preview and new file state
   const [newProfilePicFile, setNewProfilePicFile] = useState<File | null>(null);

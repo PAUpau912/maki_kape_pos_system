@@ -1,55 +1,42 @@
-import React, { useState, useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+import { useNavigate } from "react-router-dom";
 import "../src/assets/css/resetpassword.css";
 import bg from "./assets/img/signin.jpg";
-import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function ResetPassword() {
-  const navigate = useNavigate()
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [msg, setMsg] = useState('')
-  const [error, setError] = useState('')
-  const [accessToken, setAccessToken] = useState('')
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '')
-    const params = new URLSearchParams(hash)
-    
-    const token = params.get('access_token')
-    const errorMsg = params.get('error')
-    const errorDesc = params.get('error_description')
-
-    if (errorMsg) {
-      setError(errorDesc || 'Invalid or expired link.')
-    } else if (token) {
-      setAccessToken(token)
-    } else {
-      setError('Invalid or expired link.')
-    }
-  }, [])
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        setError("Invalid or expired reset link.");
+      }
+    });
+  }, []);
 
   const handleReset = async () => {
     if (!password) {
-      setError('Please enter a new password')
-      return
+      setError("Please enter a new password");
+      return;
     }
-
-    if (!accessToken) return
 
     const { error } = await supabase.auth.updateUser({
-      accessToken,
-      password
-    })
+      password,
+    });
 
     if (error) {
-      setError(error.message)
+      setError(error.message);
     } else {
-      setMsg('Password updated successfully! Redirecting to login...')
-      setTimeout(() => navigate('/login'), 3000)
+      setMsg("Password updated successfully! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 3000);
     }
-  }
+  };
 
   return (
     <div className="container" style={{ backgroundImage: `url(${bg})` }}>
@@ -67,7 +54,7 @@ function ResetPassword() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter new password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <span
                 className="toggle-password"
@@ -81,16 +68,13 @@ function ResetPassword() {
         )}
 
         {error && (
-          <button
-            className="secondary"
-            onClick={() => navigate('/login')}
-          >
+          <button className="secondary" onClick={() => navigate("/login")}>
             Request new reset link
           </button>
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default ResetPassword
+export default ResetPassword;

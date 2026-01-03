@@ -52,8 +52,8 @@ const Inventory = () => {
     product_name: "",
     category: "",
     price: 0,
-    stock: "",
-    min_stock: "",
+    stock: 0,
+    min_stock: 0,
     unit: "",
   });
 
@@ -259,13 +259,13 @@ const Inventory = () => {
                     type="number"
                     placeholder="Stock"
                     value={form.stock}
-                    onChange={e => setForm({ ...form, stock: e.target.value })}
+                    onChange={e => setForm({ ...form, stock: Number(e.target.value) })}
                   />
                   <input
                     type="number"
                     placeholder="Min Stock"
                     value={form.min_stock}
-                    onChange={e => setForm({ ...form, min_stock: e.target.value })}
+                    onChange={e => setForm({ ...form, min_stock: Number(e.target.value) })}
                   />
                   <input
                     placeholder="Unit"

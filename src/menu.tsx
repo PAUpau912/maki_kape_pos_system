@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './assets/components/sidebar';
 import '../src/assets/css/menu.css';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
+import {  FaShoppingCart } from 'react-icons/fa';
 
 interface Product {
   product_id: number;

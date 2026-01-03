@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { supabase } from './supabaseClient';
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 
-export default function ProtectedRoute({ children }: { children: JSX.Element }) {
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(!!data.session);
     };
 
     checkSession();
 
-    // Optional: listen for auth changes (e.g., logout)
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setIsAuthenticated(!!session);
+      }
+    );
 
     return () => {
       listener.subscription.unsubscribe();
@@ -24,12 +30,12 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
   }, []);
 
   if (isAuthenticated === null) {
-    return <div>Loading...</div>; // show spinner or loading screen while checking
+    return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />; // redirect if not logged in
+    return <Navigate to="/" replace />;
   }
 
-  return children; // user is authenticated
+  return <>{children}</>;
 }

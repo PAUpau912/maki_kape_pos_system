@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import App from './App';
-import ResetPassword from './ResetPassword';
+import ResetPassword from "./resetpassword";
 import Menu from './menu';
 import Dashboard from './dashboard';
 import Settings from './settings';
