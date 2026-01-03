@@ -10,10 +10,10 @@ const Settings = () => {
   const [user, setUser] = useState<any>(null);
 
   // Account info
-  setFullName(data.full_name ?? "");
-  setRole(data.role ?? "");
-  setProfilePic(data.profile_pic ?? "");
-  setEmail(user.email ?? "");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
+  const [profilePic, setProfilePic] = useState(""); // filename stored in DB
 
   // Preview and new file state
   const [newProfilePicFile, setNewProfilePicFile] = useState<File | null>(null);

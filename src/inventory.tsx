@@ -51,9 +51,9 @@ const Inventory = () => {
   const [form, setForm] = useState({
     product_name: "",
     category: "",
-    price: 0,
-    stock: 0,
-    min_stock: 0,
+    price: "",
+    stock: "",
+    min_stock: "",
     unit: "",
   });
 
@@ -196,9 +196,9 @@ const Inventory = () => {
                 setForm({
                   product_name: "",
                   category: "",
-                  price: "",
-                  stock: "",
-                  min_stock: "",
+                  price: 0,
+                  stock: 0,
+                  min_stock: 0,
                   unit: "",
                 });
                 setShowModal(true);
