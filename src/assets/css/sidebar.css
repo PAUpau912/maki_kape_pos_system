@@ -1,0 +1,180 @@
+/* =========================
+   SIDEBAR BASE (DESKTOP)
+========================= */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+/* LOGO */
+.sidebar_logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 16px;
+}
+
+.sidebar_logo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* MENU ITEM */
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 8px;
+  margin: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ICON */
+.sidebar__item .icon {
+  font-size: 18px;
+}
+
+/* HOVER */
+.sidebar__item:hover {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+/* ACTIVE */
+.sidebar__item.active {
+  background-color: #388e3c;
+  color: #fff;
+}
+
+/* =========================
+   HAMBURGER BUTTON
+========================= */
+.hamburger-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background-color: #388e3c;
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1100;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* =========================
+   CLOSE BUTTON (MOBILE)
+========================= */
+.close-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+/* =========================
+   📲 TABLET VIEW (769px – 1023px)
+   Collapsed sidebar (icons only)
+========================= */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .sidebar_logo img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sidebar__item {
+    justify-content: center;
+    padding: 14px 0;
+    margin: 6px 8px;
+  }
+
+  .sidebar__item span:last-child {
+    display: none; /* hide text */
+  }
+
+  .sidebar__item .icon {
+    font-size: 20px;
+  }
+}
+
+/* =========================
+   📱 MOBILE VIEW (≤768px)
+========================= */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .hamburger-btn {
+    display: block;
+  }
+
+  .close-btn {
+    display: block;
+  }
+
+  .sidebar_logo {
+    justify-content: space-between;
+  }
+}
+.sidebar__profile {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar__profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sidebar__profile-name {
+  color: #333;
+  font-weight: 600;
+}

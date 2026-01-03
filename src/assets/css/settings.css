@@ -1,0 +1,166 @@
+/* ===== ROOT COLORS ===== */
+:root {
+  --bg-light: #f5f6f8;
+  --card-bg: #ffffff;
+  --border-light: #e5e7eb;
+  --text-dark: #111827;
+  --text-muted: #6b7280;
+  --primary: #2563eb;
+  --danger: #dc2626;
+}
+
+/* ===== CONTAINER ===== */
+.settings-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-light);
+  margin-left: 24px;
+}
+
+/* ===== CONTENT ===== */
+.settings-content {
+  margin-left: 240px;
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.settings-header {
+  margin-bottom: 30px;
+}
+
+.settings-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.settings-header p {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ===== GRID ===== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* ===== CARD ===== */
+.settings-section {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.settings-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-form label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.settings-form input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background-color: #fafafa;
+  font-size: 14px;
+  color: #333;
+}
+.password-toggle{
+  color:black;
+}
+.settings-form input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: #fff;
+}
+
+/* ===== FILE INPUT ===== */
+.settings-form input[type="file"] {
+  padding: 12px;
+  border: 2px dashed var(--border-light);
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.settings-form small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ===== BUTTONS ===== */
+.settings-form button {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.settings-form button:hover {
+  opacity: 0.9;
+}
+
+.logout-btn {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+/* ===== PROFILE IMAGE ===== */
+.profile-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border-light);
+  margin-bottom: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

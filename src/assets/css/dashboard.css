@@ -1,0 +1,201 @@
+/* ==============================
+   General Card Styles
+   ============================== */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(111, 78, 55, 0.1);
+  padding: 18px 24px;
+  text-align: center;
+  color: #250909;
+  transition: box-shadow 0.2s;
+}
+.card h3 {
+  margin: 0 0 12px 0;
+  color: #6f4e37;
+  font-size: 1.2rem;
+}
+.card p {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+.card:hover {
+  box-shadow: 0 6px 24px rgba(111, 78, 55, 0.18);
+}
+
+/* --- Cards Row --- */
+.cards-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.cards-row .card {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* --- Charts Row --- */
+.charts-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.charts-row .card {
+  flex: 1;
+  min-width: 300px;
+  padding: 16px;
+}
+.recharts-wrapper {
+  margin: 0 auto;
+}
+
+/* --- Inventory Section --- */
+.inventory-section h2 {
+  margin-bottom: 16px;
+  color: #6f4e37;
+  font-size: 1.3rem;
+}
+.inventory-tables-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.product-inventory {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 32px auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* --- Search Input --- */
+.card input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  border: 1px solid #6f4e37;
+  font-size: 1rem;
+}
+
+/* --- Tables --- */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  table-layout: fixed;
+}
+.card th, .card td {
+  padding: 8px;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+.card th {
+  background: #f4f4f4;
+  color: #6f4e37;
+  font-weight: 600;
+}
+.card tr {
+  border-top: 1px solid #e0e0e0;
+}
+.card td {
+  color: #250909;
+  text-align: center;
+}
+
+/* --- Recent Orders Table --- */
+.card.recent-orders {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 32px auto;
+  padding: 16px;
+}
+
+/* ==============================
+   Responsive Design
+   ============================== */
+@media (max-width: 1200px) {
+  .cards-row,
+  .charts-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard__content {
+    padding: 16px;
+  }
+  .cards-row .card,
+  .charts-row .card {
+    padding: 12px;
+  }
+  .cards-row .card h3,
+  .charts-row .card h3 {
+    font-size: 1rem;
+  }
+  .cards-row .card p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+  tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  tbody td {
+    text-align: left;
+    padding: 6px 8px 6px 50%;
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+  tbody td::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-weight: 600;
+    white-space: nowrap;
+    color: #6f4e37;
+  }
+  .charts-row .card {
+    overflow-x: auto;
+  }
+  .charts-row .card svg {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cards-row .card h3,
+  .charts-row .card h3 {
+    font-size: 0.95rem;
+  }
+  .cards-row .card p {
+    font-size: 0.95rem;
+  }
+  tbody td {
+    font-size: 0.9rem;
+  }
+  tbody td::before {
+    font-size: 0.9rem;
+  }
+  .card input[type="text"] {
+    font-size: 0.95rem;
+  }
+}
