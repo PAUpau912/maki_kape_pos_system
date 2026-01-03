@@ -41,14 +41,15 @@ const Settings = () => {
       .eq("user_id", user.id)
       .single();
 
-    if (data) {
-      setFullName(data.full_name);
-      setRole(data.role);
-      setProfilePic(data.profile_pic);
-      if (data.profile_pic) {
-        setPreviewUrl(await getSignedUrl(data.profile_pic));
-      }
+      if (data) {
+    setFullName(data.full_name ?? "");
+    setRole(data.role ?? "");
+    setProfilePic(data.profile_pic ?? "");
+    if (data.profile_pic) {
+      setPreviewUrl(await getSignedUrl(data.profile_pic));
     }
+  }
+
 
     // Removed login history
   };
