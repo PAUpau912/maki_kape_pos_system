@@ -9,9 +9,9 @@ interface InventoryProduct {
   id: number;
   product_name: string;
   category: string;
-  price: number;
-  stock: number;
-  min_stock: number;
+  price: string;
+  stock: string;
+  min_stock: string;
   unit: string;
   status: string;
 }
@@ -95,39 +95,41 @@ const Inventory = () => {
   }, []);
 
   /* ================= INVENTORY SAVE ================= */
-  const handleSave = async () => {
-    const stockNum = Number(form.stock);
-    const minStockNum = Number(form.min_stock);
-    const status = stockNum <= minStockNum ? "LOW STOCK" : "IN STOCK";
+ const handleSave = async () => {
+  const priceNum = Number(form.price);
+  const stockNum = Number(form.stock);
+  const minStockNum = Number(form.min_stock);
+  const status = stockNum <= minStockNum ? "LOW STOCK" : "IN STOCK";
 
-    if (editingItem) {
-      await supabase
-        .from("inventory_products")
-        .update({
-          product_name: form.product_name,
-          category: form.category,
-          price: form.price,
-          stock: stockNum,
-          min_stock: minStockNum,
-          unit: form.unit,
-          status,
-        })
-        .eq("id", editingItem.id);
-    } else {
-      await supabase.from("inventory_products").insert({
+  if (editingItem) {
+    await supabase
+      .from("inventory_products")
+      .update({
         product_name: form.product_name,
         category: form.category,
-        price: form.price,
+        price: priceNum,
         stock: stockNum,
         min_stock: minStockNum,
         unit: form.unit,
         status,
-      });
-    }
+      })
+      .eq("id", editingItem.id);
+  } else {
+    await supabase.from("inventory_products").insert({
+      product_name: form.product_name,
+      category: form.category,
+      price: priceNum,
+      stock: stockNum,
+      min_stock: minStockNum,
+      unit: form.unit,
+      status,
+    });
+  }
 
-    setShowModal(false);
-    fetchSupplies();
-  };
+  setShowModal(false);
+  fetchSupplies();
+};
+
 
   /* ================= PRODUCT EDIT ================= */
   const startEditProduct = (p: Product) => {
@@ -250,23 +252,23 @@ const Inventory = () => {
                     onChange={e => setForm({ ...form, category: e.target.value })}
                   />
                   <input
-                    type="number"
-                    placeholder="Price"
-                    value={form.price}
-                    onChange={e => setForm({ ...form, price: Number(e.target.value) })}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Stock"
-                    value={form.stock}
-                    onChange={e => setForm({ ...form, stock: Number(e.target.value) })}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Min Stock"
-                    value={form.min_stock}
-                    onChange={e => setForm({ ...form, min_stock: Number(e.target.value) })}
-                  />
+                      type="number"
+                      placeholder="Price"
+                      value={form.price}
+                      onChange={e => setForm({ ...form, price: e.target.value })}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      value={form.stock}
+                      onChange={e => setForm({ ...form, stock: e.target.value })}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Min Stock"
+                      value={form.min_stock}
+                      onChange={e => setForm({ ...form, min_stock: e.target.value })}
+                    />
                   <input
                     placeholder="Unit"
                     value={form.unit}
